@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   hour: string
-  minute: number
+  minute: string
   second: string
 }>()
 
