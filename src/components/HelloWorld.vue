@@ -3,7 +3,6 @@ import { computed, Ref, ref } from 'vue';
 import { formatTime } from '../utils';
 import Time from './Time.vue';
 
-const isActive = ref(true)
 let timer: number
 let b_timer: number
 
@@ -15,13 +14,16 @@ const hour = computed(() => formatTime(h.value))
 const minute = computed(() => formatTime(m.value))
 const second = computed(() => formatTime(s.value))
 
-const totalMinutes = ref(0)
+const totalSeconds = ref(0)
 const bonusTime = computed(() => {
-  const bonusMinutes: number = Math.floor(totalMinutes.value / 2)
+  const bonusSeconds: number = Math.floor(totalSeconds.value / 12)
+  const hour = Math.floor(bonusSeconds / 36)
+  const minute = Math.floor((bonusSeconds % 36) / 6)
+  const seconds = (bonusSeconds % 36) % 6
   return {
-    h: formatTime(Math.floor(bonusMinutes / 6)),
-    m: formatTime(bonusMinutes % 6),
-    s: formatTime(0)
+    h: hour,
+    m: minute,
+    s: seconds
   }
 })
 
@@ -36,8 +38,8 @@ const computedTime = (hour: Ref<number>, minute: Ref<number>, second: Ref<number
     hour.value += 1
     minute.value = 0
   }
-  // 计算奖励时间
-  totalMinutes.value = h.value * 6 + m.value + (s.value / 6)
+  // 计算奖励时间,总秒数
+  totalSeconds.value = h.value * 6 * 6 + m.value * 6 + s.value
 }
 
 const resetTime = (hour: Ref<number>, minute: Ref<number>, second: Ref<number>) => {
@@ -46,9 +48,7 @@ const resetTime = (hour: Ref<number>, minute: Ref<number>, second: Ref<number>) 
   second.value = 0
 }
 
-
 const startWork = () => {
-  isActive.value = true
   // 暂停b的消耗
   clearInterval(b_timer)
   // 避免重复创建timer
@@ -60,13 +60,17 @@ const startWork = () => {
   }, 1000);
 }
 
-
 const startPlay = () => {
-  isActive.value = false
   clearInterval(timer)
   timer = 0
   resetTime(h, m, s)
+  // 倒计时计算
+  if (totalSeconds.value === 0) return
+  setInterval(() => {
+    totalSeconds.value -= 1
+  }, 1000)
 }
+
 </script>
 
 <template>
@@ -75,8 +79,7 @@ const startPlay = () => {
       <Time :hour="hour" :minute="minute" :second="second" />
     </div>
     <div class="time">
-      <!-- 这里传的应该是累积的奖励时间 -->
-      <Time :hour="bonusTime.h" :minute="bonusTime.m" :second="bonusTime.s" />
+      <Time :hour="formatTime(bonusTime.h)" :minute="formatTime(bonusTime.m)" :second="formatTime(bonusTime.s)" />
     </div>
   </div>
   <button class="btn" @click="startWork">Work</button>
