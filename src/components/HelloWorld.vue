@@ -16,10 +16,10 @@ const second = computed(() => formatTime(s.value))
 
 const totalSeconds = ref(0)
 const bonusTime = computed(() => {
-  const bonusSeconds: number = Math.floor(totalSeconds.value / 12)
-  const hour = Math.floor(bonusSeconds / 36)
-  const minute = Math.floor((bonusSeconds % 36) / 6)
-  const seconds = (bonusSeconds % 36) % 6
+  const bonusSeconds: number = Math.floor(totalSeconds.value / 2)
+  const hour = Math.floor(bonusSeconds / 3600)
+  const minute = Math.floor((bonusSeconds % 3600) / 60)
+  const seconds = (bonusSeconds % 3600) % 60
   return {
     h: hour,
     m: minute,
@@ -30,16 +30,16 @@ const bonusTime = computed(() => {
 // 计算时间
 const computedTime = (hour: Ref<number>, minute: Ref<number>, second: Ref<number>) => {
   second.value += 1
-  if (second.value >= 6) {
+  if (second.value >= 60) {
     minute.value += 1
     second.value = 0
   }
-  if (minute.value >= 6) {
+  if (minute.value >= 60) {
     hour.value += 1
     minute.value = 0
   }
   // 计算奖励时间,总秒数
-  totalSeconds.value = h.value * 6 * 6 + m.value * 6 + s.value
+  totalSeconds.value = h.value * 3600 + m.value * 60 + s.value
 }
 
 const resetTime = (hour: Ref<number>, minute: Ref<number>, second: Ref<number>) => {
@@ -67,7 +67,9 @@ const startPlay = () => {
   // 倒计时计算
   if (totalSeconds.value === 0) return
   setInterval(() => {
-    totalSeconds.value -= 1
+    if (totalSeconds.value > 0) {
+      totalSeconds.value -= 1
+    }
   }, 1000)
 }
 
