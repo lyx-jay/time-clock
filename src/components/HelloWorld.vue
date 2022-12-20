@@ -5,7 +5,7 @@ import Time from './Time.vue';
 
 let timer: number
 let b_timer: number
-
+const isCountDown = ref(false)
 const h = ref(0)
 const m = ref(0)
 const s = ref(0)
@@ -16,10 +16,15 @@ const second = computed(() => formatTime(s.value))
 
 const totalSeconds = ref(0)
 const bonusTime = computed(() => {
-  const bonusSeconds: number = Math.floor(totalSeconds.value / 2)
-  const hour = Math.floor(bonusSeconds / 3600)
-  const minute = Math.floor((bonusSeconds % 3600) / 60)
-  const seconds = (bonusSeconds % 3600) % 60
+  // play time 增加
+  // console.log('totalSeconds', totalSeconds.value)
+  const bonusSeconds: number = isCountDown.value ? Math.floor(totalSeconds.value / 2) : totalSeconds.value
+  let hour = 0
+  const seconds = bonusSeconds % 60
+  const minute = Math.floor(bonusSeconds / 60)
+  if (minute === 60) {
+    hour += 1
+  }
   return {
     h: hour,
     m: minute,
@@ -46,6 +51,7 @@ const resetTime = (hour: Ref<number>, minute: Ref<number>, second: Ref<number>) 
   hour.value = 0
   minute.value = 0
   second.value = 0
+  totalSeconds.value = bonusTime.value.h * 3600 + bonusTime.value.m * 60 + bonusTime.value.s
 }
 
 const startWork = () => {
@@ -55,6 +61,7 @@ const startWork = () => {
   if (timer) {
     return
   }
+  isCountDown.value = true
   timer = setInterval(() => {
     computedTime(h, m, s)
   }, 1000);
@@ -66,6 +73,7 @@ const startPlay = () => {
   resetTime(h, m, s)
   // 倒计时计算
   if (totalSeconds.value === 0) return
+  isCountDown.value = false
   setInterval(() => {
     if (totalSeconds.value > 0) {
       totalSeconds.value -= 1
