@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import HelloWorld from './components/HelloWorld.vue'
+import HomeVue from './views/Home.vue';
 </script>
 
 <template>
-  <HelloWorld />
+  <!-- <HelloWorld /> -->
+  <HomeVue />
 </template>
 
 <style scoped>

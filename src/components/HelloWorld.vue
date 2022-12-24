@@ -18,7 +18,7 @@ const totalSeconds = ref(0)
 const bonusTime = computed(() => {
   // play time 增加
   // console.log('totalSeconds', totalSeconds.value)
-  const bonusSeconds: number = isCountDown.value ? Math.floor(totalSeconds.value / 2) : totalSeconds.value
+  const bonusSeconds: number = isCountDown.value ? totalSeconds.value : Math.floor(totalSeconds.value / 2)
   let hour = 0
   const seconds = bonusSeconds % 60
   const minute = Math.floor(bonusSeconds / 60)
@@ -61,7 +61,7 @@ const startWork = () => {
   if (timer) {
     return
   }
-  isCountDown.value = true
+  isCountDown.value = false
   timer = setInterval(() => {
     computedTime(h, m, s)
   }, 1000);
@@ -73,7 +73,7 @@ const startPlay = () => {
   resetTime(h, m, s)
   // 倒计时计算
   if (totalSeconds.value === 0) return
-  isCountDown.value = false
+  isCountDown.value = true
   setInterval(() => {
     if (totalSeconds.value > 0) {
       totalSeconds.value -= 1

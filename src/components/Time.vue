@@ -1,17 +1,20 @@
 <script setup lang="ts">
 const props = defineProps<{
-  hour: string
-  minute: string
-  second: string
+  hour: number
+  minute: number
+  second: number
 }>()
 
+const formatTime = (num: number) => {
+  return Math.floor(num)
+}
 </script>
 
 <template>
   <div class="time-clock">
-    <div class="h">{{ hour }}:</div>
-    <div class="m">{{ minute }}:</div>
-    <div class="s">{{ second }}</div>
+    <div class="h">{{ formatTime(hour) }}:</div>
+    <div class="m">{{ formatTime(minute) }}:</div>
+    <div class="s">{{ formatTime(second) }}</div>
   </div>
 </template>
 
