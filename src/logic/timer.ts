@@ -4,17 +4,23 @@ import type { Ref } from 'vue'
 const ONE_MINUTE_SECONDS = 6
 
 export default function useTimer(scale: number = 2) {
+
   let timer: Ref<number> = ref(0)
   let consumeTimer: Ref<number> = ref(0)
 
+  // 正常时间h、m、s
   const h = ref(0)
   const m = ref(0)
   const s = ref(0)
+
+  // 奖励时间h、m、s
   const b_h = ref(0)
   const b_m = ref(0)
   const b_s = ref(0)
 
-  // 开始计时
+  /**
+   * 开始计时
+   */
   const start = () => {
     timer.value = setInterval(() => {
       s.value += 1
@@ -37,16 +43,20 @@ export default function useTimer(scale: number = 2) {
       }
     }, 1000)
   }
-  // 暂停计时
+  /**
+   * 暂停计时
+   */
   const pause = () => {
     clearInterval(timer.value)
   }
 
+  /**
+   * 消耗时间
+   */
   const consume = () => {
     consumeTimer.value = setInterval(() => {
       console.log(1)
       if (b_s.value <= 0) {
-        // debugger
         clearInterval(consumeTimer.value)
         return
       }

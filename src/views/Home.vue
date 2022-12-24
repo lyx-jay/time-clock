@@ -2,7 +2,11 @@
 import TimeVue from '../components/Time.vue'
 import useTimer from '../logic/timer'
 
-const { h, m, s, start, pause, b_h, b_m, b_s, consume } = useTimer()
+const {
+  h, m, s,
+  b_h, b_m, b_s,
+  consume, start, pause
+} = useTimer()
 </script>
 
 <template>
