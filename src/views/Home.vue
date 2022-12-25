@@ -1,19 +1,26 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import TimeVue from '../components/Time.vue';
 import useTimer from '../logic/timer';
+
+const scale = ref(4)
 
 const {
   h, m, s,
   b_h, b_m, b_s,
   consume, start, pause,
   isTiming, canConsume
-} = useTimer()
+} = useTimer(scale.value)
 
 
 </script>
 
 <template>
   <div class="clock-wrapper">
+    <div class="scale">
+      <span class="scale-text">scale</span>
+      <input type="text" class="input" v-model="scale">
+    </div>
     <div class="time-box regular-time-box">
       <TimeVue :hour="h" :minute="m" :second="s" />
     </div>
@@ -40,6 +47,28 @@ const {
   color: #FFFFFF;
   background-color: #84a98c;
   box-shadow: -1px 2px 64px 9px rgba(108, 184, 115, 0.44);
+}
+
+.scale {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.5rem;
+}
+
+.scale-text {
+  color: #dee2e6;
+}
+
+.input {
+  width: 2rem;
+  height: 1rem;
+  margin-left: .2rem;
+  outline: none;
+  background-color: #98c9a3;
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  color: #dee2e6;
 }
 
 .time-box {
