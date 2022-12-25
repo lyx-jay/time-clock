@@ -1,10 +1,14 @@
-import { ref } from 'vue'
+import { isRuntimeOnly, ref } from 'vue'
 import type { Ref } from 'vue'
 
 const ONE_MINUTE_SECONDS = 6
 
 export default function useTimer(scale: number = 2) {
 
+  // 是否正在计时
+  let isTiming = ref(false)
+  // 是否可以消耗奖励时间
+  let canConsume = ref(false)
   let timer: Ref<number> = ref(0)
   let consumeTimer: Ref<number> = ref(0)
 
@@ -22,6 +26,7 @@ export default function useTimer(scale: number = 2) {
    * 开始计时
    */
   const start = () => {
+    isTiming.value = true
     timer.value = setInterval(() => {
       s.value += 1
       b_s.value += (1 / scale)
@@ -47,6 +52,8 @@ export default function useTimer(scale: number = 2) {
    * 暂停计时
    */
   const pause = () => {
+    isTiming.value = false
+    canConsume.value = true
     clearInterval(timer.value)
   }
 
@@ -55,9 +62,9 @@ export default function useTimer(scale: number = 2) {
    */
   const consume = () => {
     consumeTimer.value = setInterval(() => {
-      console.log(1)
       if (b_s.value <= 0) {
         clearInterval(consumeTimer.value)
+        canConsume.value = false
         return
       }
       b_s.value -= 1
@@ -80,6 +87,8 @@ export default function useTimer(scale: number = 2) {
     b_s,
     start,
     pause,
-    consume
+    consume,
+    isTiming,
+    canConsume
   }
 }

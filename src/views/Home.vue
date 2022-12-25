@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import TimeVue from '../components/Time.vue'
-import useTimer from '../logic/timer'
+import TimeVue from '../components/Time.vue';
+import useTimer from '../logic/timer';
 
 const {
   h, m, s,
   b_h, b_m, b_s,
-  consume, start, pause
+  consume, start, pause,
+  isTiming, canConsume
 } = useTimer()
+
+
 </script>
 
 <template>
@@ -18,9 +21,9 @@ const {
       <TimeVue :hour="b_h" :minute="b_m" :second="b_s" />
     </div>
   </div>
-  <button class='btn start' @click="start">start</button>
-  <button class='btn pause' @click="pause">pause</button>
-  <button class='btn consume' @click="consume">consume</button>
+  <button class='btn start' @click="start" :disabled="isTiming ? true : false">start</button>
+  <button class='btn pause' @click="pause" :disabled="!isTiming ? true : false">pause</button>
+  <button class='btn consume' @click="consume" :disabled="canConsume ? false : true">consume</button>
 </template>
 
 <style scoped>
