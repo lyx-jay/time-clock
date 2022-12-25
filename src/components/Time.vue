@@ -5,16 +5,22 @@ const props = defineProps<{
   second: number
 }>()
 
+/**
+ * 格式化时间
+ * @param num 时间
+ */
 const formatTime = (num: number) => {
-  return Math.floor(num)
+  const newNum = Math.floor(num)
+  if (newNum >= 0 && newNum < 10) return `0${newNum}`
+  return newNum.toString()
 }
 </script>
 
 <template>
   <div class="time-clock">
-    <div class="h">{{ formatTime(hour) }}:</div>
-    <div class="m">{{ formatTime(minute) }}:</div>
-    <div class="s">{{ formatTime(second) }}</div>
+    <div class="h text">{{ formatTime(hour) }}:</div>
+    <div class="m text">{{ formatTime(minute) }}:</div>
+    <div class="s text">{{ formatTime(second) }}</div>
   </div>
 </template>
 
@@ -24,4 +30,9 @@ const formatTime = (num: number) => {
   align-items: center;
   justify-content: center;
 }
+
+/* .text {
+  letter-spacing: 4px;
+  font-size: 3.5rem;
+} */
 </style>
