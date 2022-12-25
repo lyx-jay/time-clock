@@ -1,16 +1,84 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import TimeVue from '../components/Time.vue';
-import useTimer from '../logic/timer';
+import type { Ref } from 'vue'
+import { ref } from 'vue'
+import TimeVue from '../components/Time.vue'
 
+const ONE_MINUTE_SECONDS = 6
+
+// 默认奖励时间的比例为4
 const scale = ref(4)
+// 是否正在计时
+const isTiming = ref(false)
+// 是否可以消耗奖励时间
+const canConsume = ref(false)
+const timer: Ref<number> = ref(0)
+const consumeTimer: Ref<number> = ref(0)
 
-const {
-  h, m, s,
-  b_h, b_m, b_s,
-  consume, start, pause,
-  isTiming, canConsume
-} = useTimer(scale.value)
+// 正常时间h、m、s
+const h = ref(0)
+const m = ref(0)
+const s = ref(0)
+
+// 奖励时间h、m、s
+const b_h = ref(0)
+const b_m = ref(0)
+const b_s = ref(0)
+
+/**
+ * 开始计时
+ */
+const start = () => {
+  isTiming.value = true
+  timer.value = setInterval(() => {
+    s.value += 1
+    b_s.value += (1 / scale.value)
+    if (s.value >= ONE_MINUTE_SECONDS) {
+      s.value = 0
+      m.value += 1
+    }
+    if (b_s.value >= ONE_MINUTE_SECONDS) {
+      b_s.value = 0
+      b_m.value += 1
+    }
+    if (m.value >= ONE_MINUTE_SECONDS) {
+      m.value = 0
+      h.value += 1
+    }
+    if (b_m.value >= ONE_MINUTE_SECONDS) {
+      b_m.value = 0
+      b_h.value += 1
+    }
+  }, 1000)
+}
+/**
+ * 暂停计时
+ */
+const pause = () => {
+  isTiming.value = false
+  canConsume.value = true
+  clearInterval(timer.value)
+}
+
+/**
+ * 消耗时间
+ */
+const consume = () => {
+  consumeTimer.value = setInterval(() => {
+    if (b_s.value <= 0) {
+      clearInterval(consumeTimer.value)
+      canConsume.value = false
+      return
+    }
+    b_s.value -= 1
+    if (b_s.value === 0 && b_m.value > 0) {
+      b_m.value -= 1
+      b_s.value = ONE_MINUTE_SECONDS - 1
+    }
+    if (b_m.value === 0 && b_h.value > 0) {
+      b_h.value -= 1
+    }
+  }, 1000)
+}
 
 
 </script>
